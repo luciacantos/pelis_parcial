@@ -1,9 +1,12 @@
 from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from streaming.models import Movie
-from streaming.serializers import MovieSerializer
+from .models import Movie
+from .serializers import MovieSerializer
+
+def home(request):
+    movies = Movie.objects.all()
+    return render(request, 'home.html', {'movies': movies})
 
 class MovieListView(APIView):
     def get(self, request):
@@ -16,4 +19,6 @@ class MovieDetailView(APIView):
         movie = Movie.objects.get(pk=pk)
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
+
+
 
