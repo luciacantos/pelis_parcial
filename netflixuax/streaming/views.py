@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Movie, Playlist, Recommendation
 from .serializers import MovieSerializer, PlaylistSerializer, RecommendationSerializer
+from .utils import fetch_popular_movies, fetch_movie_details
 
 # Vista Home para plantillas
 def home(request):
@@ -51,4 +52,21 @@ class RecommendationView(APIView):
         except Recommendation.DoesNotExist:
             return Response({"message": "No recommendations found."}, status=status.HTTP_404_NOT_FOUND)
 
+
+
+def popular_movies(request):
+    """Vista para obtener películas populares."""
+    try:
+        data = fetch_popular_movies()
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def movie_details(request, movie_id):
+    """Vista para obtener detalles de una película."""
+    try:
+        data = fetch_movie_details(movie_id)
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 

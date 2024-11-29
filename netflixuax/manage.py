@@ -2,6 +2,9 @@
 import os
 import sys
 
+TMDB_API_KEY= 'c2dc323ab66e5495c27791ea6469e55e'
+
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "netflixuax.settings")
     try:

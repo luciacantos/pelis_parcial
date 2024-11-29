@@ -1,8 +1,12 @@
 from pathlib import Path
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-replace-this-with-your-own-secret-key'
+TMDB_API_KEY = config('TMDB_API_KEY')
+
+
 
 DEBUG = True
 
