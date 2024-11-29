@@ -1,6 +1,6 @@
 import requests
 
-url = "https://api.themoviedb.org/3/authentication"
+url = "https://api.themoviedb.org/3/account/21660008/favorite/movies?language=en-US&page=1&sort_by=created_at.asc"
 
 headers = {
     "accept": "application/json",
@@ -10,4 +10,3 @@ headers = {
 response = requests.get(url, headers=headers)
 
 print(response.text)
-
