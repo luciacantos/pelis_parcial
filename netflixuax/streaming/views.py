@@ -1,24 +1,33 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Movie
-from .serializers import MovieSerializer
+from rest_framework import status
+from .models import Playlist, Recommendation, Movie
+from .serializers import PlaylistSerializer, RecommendationSerializer
 
-def home(request):
-    movies = Movie.objects.all()
-    return render(request, 'home.html', {'movies': movies})
-
-class MovieListView(APIView):
+class PlaylistView(APIView):
     def get(self, request):
-        movies = Movie.objects.all()
-        serializer = MovieSerializer(movies, many=True)
+        playlists = Playlist.objects.filter(user=request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
 
-class MovieDetailView(APIView):
-    def get(self, request, pk):
-        movie = Movie.objects.get(pk=pk)
-        serializer = MovieSerializer(movie)
-        return Response(serializer.data)
+    def post(self, request):
+        data = request.data
+        playlist = Playlist.objects.create(name=data['name'], user=request.user)
+        if 'movies' in data:
+            for movie_id in data['movies']:
+                movie = Movie.objects.get(id=movie_id)
+                playlist.movies.add(movie)
+        playlist.save()
+        return Response(PlaylistSerializer(playlist).data, status=status.HTTP_201_CREATED)
+
+class RecommendationView(APIView):
+    def get(self, request):
+        try:
+            recommendation = Recommendation.objects.get(user=request.user)
+            serializer = RecommendationSerializer(recommendation)
+            return Response(serializer.data)
+        except Recommendation.DoesNotExist:
+            return Response({"message": "No recommendations found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 
