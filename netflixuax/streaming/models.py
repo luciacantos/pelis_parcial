@@ -27,3 +27,4 @@ class Recommendation(models.Model):
 
     def __str__(self):
         return f"Recommendations for {self.user.username}"
+

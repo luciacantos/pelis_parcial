@@ -1,8 +1,30 @@
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Playlist, Recommendation, Movie
-from .serializers import PlaylistSerializer, RecommendationSerializer
+from .models import Movie, Playlist, Recommendation
+from .serializers import MovieSerializer, PlaylistSerializer, RecommendationSerializer
+
+# Vista Home para plantillas
+def home(request):
+    movies = Movie.objects.all()
+    return render(request, 'home.html', {'movies': movies})
+
+# Vistas para la API
+class MovieListView(APIView):
+    def get(self, request):
+        movies = Movie.objects.all()
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+
+class MovieDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            movie = Movie.objects.get(pk=pk)
+            serializer = MovieSerializer(movie)
+            return Response(serializer.data)
+        except Movie.DoesNotExist:
+            return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class PlaylistView(APIView):
     def get(self, request):
@@ -28,6 +50,5 @@ class RecommendationView(APIView):
             return Response(serializer.data)
         except Recommendation.DoesNotExist:
             return Response({"message": "No recommendations found."}, status=status.HTTP_404_NOT_FOUND)
-
 
 
