@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Movie, Playlist, Recommendation
 from .serializers import MovieSerializer, PlaylistSerializer, RecommendationSerializer
@@ -30,6 +31,8 @@ class MovieDetailView(APIView):
             return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class PlaylistView(APIView):
+
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         playlists = Playlist.objects.filter(user=request.user)
         serializer = PlaylistSerializer(playlists, many=True)
